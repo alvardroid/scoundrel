@@ -3,15 +3,10 @@ public class Utils {
         String pColor = "\033[0m";
 
         switch (color) {
-            case RED:
-                pColor = "\033[31m";
-                break;
-            case YELLOW:
-                pColor = "\033[33m";
-                break;
-            case LIME:
-                pColor = "\033[32m";
-                break;
+            case RED -> pColor = "\033[31m";
+            case YELLOW -> pColor = "\033[33m";
+            case LIME -> pColor = "\033[32m";
+            case WHITE -> pColor = "\033[0m";
         }
 
         System.out.print(pColor + text + "\033[0m");

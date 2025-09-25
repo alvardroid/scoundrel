@@ -6,15 +6,22 @@ public class Weapon {
     public Weapon(int value, char suit) {
         this.value = value;
         this.suit = suit;
-        this.durability = value;
+        this.durability = Integer.MAX_VALUE;
     }
 
-    public int useWeapon(int value) {
-        durability -= value;
-        return durability;
+    public void useWeapon(int damage) {
+        durability = damage;
     }
 
     public void showWeapon() {
         Utils.colorPrint(ColorType.RED, value + suit + " - " + durability);
+    }
+
+    public int getValue() {
+        return value;
+    }
+
+    public int getDurability() {
+        return durability;
     }
 }

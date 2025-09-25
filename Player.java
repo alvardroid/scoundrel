@@ -17,7 +17,8 @@ public class Player {
     }
 
     public void attackWeapon(Card card) {
-        int diff = weapon.useWeapon(card.getValue());
+        weapon.useWeapon(card.getValue());
+        int diff = weapon.getValue() - card.getValue();
         if (diff < 0)
             health -= Math.abs(diff);
     }
