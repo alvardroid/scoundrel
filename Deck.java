@@ -29,6 +29,14 @@ public class Deck {
         return card;
     }
 
+    public int getTotalCards() {
+        return cards.size();
+    }
+
+    public void addCard(Card card) {
+        cards.add(card);
+    }
+
     public void addCardsInRange(int maxValues, char suit) {
         for (int i = 2; i <= maxValues; i++) {
             Card card = new Card(i, suit);

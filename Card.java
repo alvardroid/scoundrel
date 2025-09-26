@@ -33,6 +33,10 @@ public class Card {
         return this.suit;
     }
 
+    public CardType getType() {
+        return this.type;
+    }
+
     public void setType(CardType type) {
         this.type = type;
     }

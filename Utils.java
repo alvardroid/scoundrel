@@ -1,3 +1,5 @@
+import java.util.Scanner;
+
 public class Utils {
     public static void colorPrint(ColorType color, String text) {
         String pColor = "\033[0m";
@@ -10,5 +12,27 @@ public class Utils {
         }
 
         System.out.print(pColor + text + "\033[0m");
+    }
+
+    public static void clearScreen() {  
+        System.out.print("\033[H\033[2J");  
+        System.out.flush();  
+    }
+
+    public static int userNumberInput() {
+        try {
+            Scanner scanner = new Scanner(System.in);
+            System.out.print(
+                "--------------------------\r\n" + //
+                "Enter a number: "
+            );
+            int userInput = scanner.nextInt();
+
+            return userInput;
+            
+        } catch (Exception e) {
+            Utils.colorPrint(ColorType.RED, "\r\n Please enter a number \r\n");
+            return userNumberInput();
+        }
     }
 }
