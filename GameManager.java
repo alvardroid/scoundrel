@@ -68,7 +68,7 @@ public class GameManager {
             challengeCard(userInput);
 
             if (player.isAlive() && dungeon.roomSize() <= 0) {
-                Utils.colorPrint(ColorType.YELLOW, "The room is cleared. You move forward");
+                Utils.colorPrint(ColorType.YELLOW, "\nThe room is cleared. You move forward");
             }
 
             Utils.waitEnter();
