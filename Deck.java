@@ -15,13 +15,6 @@ public class Deck {
         shuffleDeck();
     }
 
-    public void showDeck() {
-        for (Card card : cards) {
-            card.showCard();
-            System.out.print(" ");
-        }
-    }
-
     public Card getCard() {
         Card card = cards.get(0);
         cards.remove(0);

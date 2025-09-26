@@ -2,6 +2,7 @@ public class GameManager {
     private static final int ROOM_SIZE = 4;
     private boolean roomAvoided = false;
     private boolean canEscape = true;
+    private boolean canHeal = true;
 
     private Player player;
     private Deck deck;
@@ -26,18 +27,21 @@ public class GameManager {
         } else {
             canEscape = true;
         }
+        canHeal = true;
     }
 
-    public void gameLoop() {
+    public boolean gameLoop() {
         do {
             Utils.clearScreen();
             fillRoom();
             challengeRoom();
 
-            if (deck.getTotalCards() <= 0 && dungeon.enemiesLeft() <= 0)
-                return;
+            if (player.isAlive() && deck.getTotalCards() <= 0 && dungeon.enemiesLeft() <= 0)
+                return true;
                 
         } while (player.isAlive());
+
+        return false;
     }
 
     public void challengeRoom() {
@@ -46,20 +50,32 @@ public class GameManager {
 
             int userInput = userSelect();
             if (userInput == 0 && canEscape) {
+                Utils.colorPrint(ColorType.YELLOW, "You left the room...");
                 for (int i = 0; i < dungeon.roomSize(); i++)
                     deck.addCard(dungeon.getCard(i + 1));
                 
                 dungeon.clearRoom();
                 roomAvoided = true;
+                Utils.waitEnter();
                 return;
 
             } else if (userInput == 0 && dungeon.roomSize() <= 1) {
+                Utils.colorPrint(ColorType.YELLOW, "You step into the next room...");
+                Utils.waitEnter();
                 return;
             }
 
             challengeCard(userInput);
 
+            if (player.isAlive() && dungeon.roomSize() <= 0) {
+                Utils.colorPrint(ColorType.YELLOW, "The room is cleared. You move forward");
+            }
+
+            Utils.waitEnter();
+
         } while (player.isAlive() && dungeon.roomSize() > 0);
+
+        
     }
 
     public void challengeCard(int userInput) {
@@ -69,7 +85,8 @@ public class GameManager {
                 fightEnemy(selectedCard);
                 break;
             case CardType.HEAL:
-                player.getHealth(selectedCard.getValue());
+                player.getHealth(selectedCard.getValue(), canHeal);
+                canHeal = false;
                 break;
             case CardType.WEAPON:
                 player.equipWeapon(selectedCard);
@@ -104,10 +121,11 @@ public class GameManager {
             player.showHealth();
 
         if (canEscape)
-            System.out.print("[0] Escape room |");
+            Utils.colorPrint(ColorType.PINK, "[0] Escape room");
         else if (dungeon.roomSize() <= 1)
-            System.out.print("[0] Enter next room |");
+            Utils.colorPrint(ColorType.LIME,"[0] Enter next room");
 
+        System.out.print(" \\\\ ");
         dungeon.showRoom();
     }
 
@@ -117,7 +135,7 @@ public class GameManager {
             return;
         }
 
-        Utils.colorPrint(ColorType.YELLOW, "How you wanna fight the enemy?\r\n");
+        Utils.colorPrint(ColorType.YELLOW, "\nHow you wanna fight the enemy?\r\n");
         Utils.colorPrint(ColorType.LIME, "[1] Use Weapon");
         Utils.colorPrint(ColorType.YELLOW, " | ");
         Utils.colorPrint(ColorType.RED, "[0] Barehanded\r\n");

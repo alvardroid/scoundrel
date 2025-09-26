@@ -8,7 +8,7 @@ public class Card {
         this.suit = suit;
     }
 
-    public void showCard() {
+    public void showCard(int index) {
         String v;
         switch (value) {
             case 11 -> v = "J";
@@ -17,6 +17,8 @@ public class Card {
             case 14 -> v = "A";
             default -> v = String.valueOf(value);
         }
+
+        Utils.colorPrint(ColorType.PINK, "["+ index +"] ");
 
         switch (type) {
             case ENEMY -> Utils.colorPrint(ColorType.RED, v + suit);

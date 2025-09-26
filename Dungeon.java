@@ -44,10 +44,9 @@ public class Dungeon {
     }
 
     public void showRoom() {
-        Utils.colorPrint(ColorType.WHITE, "| ROOM: ");
+        Utils.colorPrint(ColorType.WHITE, "ROOM: ");
         for (int i = 0; i < room.size(); i++) {
-            System.out.print("["+ (i + 1) +"] ");
-            room.get(i).showCard();
+            room.get(i).showCard(i + 1);
             System.out.print(" | ");
         }
         System.out.println();
