@@ -75,7 +75,6 @@ public class GameManager {
 
         } while (player.isAlive() && dungeon.roomSize() > 0);
 
-        
     }
 
     public void challengeCard(int userInput) {
@@ -105,7 +104,7 @@ public class GameManager {
             Utils.colorPrint(ColorType.RED, "Please enter a number in range [0-"+ dungeon.roomSize() +"]\n\n\r");
             return userSelect();
 
-        } else if (number == 0 && (!canEscape && dungeon.roomSize() > 1)) {
+        } else if (number == 0 && (!canEscape && dungeon.roomSize() > 1 && deck.getTotalCards() <= 0)) {
             Utils.colorPrint(ColorType.RED, "Please enter a number in range [1-"+ dungeon.roomSize() +"]\n\n\r");
             return userSelect();
 
@@ -120,12 +119,14 @@ public class GameManager {
         else
             player.showHealth();
 
-        if (canEscape)
-            Utils.colorPrint(ColorType.PINK, "[0] Escape room");
-        else if (dungeon.roomSize() <= 1)
-            Utils.colorPrint(ColorType.LIME,"[0] Enter next room");
-
-        System.out.print(" \\\\ ");
+        if (deck.getTotalCards() > 1) {
+            if (canEscape)
+                Utils.colorPrint(ColorType.PINK, "[0] Escape room");
+            else if (dungeon.roomSize() <= 1)
+                Utils.colorPrint(ColorType.LIME,"[0] Enter next room");
+            System.out.print(" \\\\ ");
+        }
+        
         dungeon.showRoom();
     }
 
