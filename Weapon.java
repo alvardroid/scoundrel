@@ -19,16 +19,17 @@ public class Weapon {
 
     public void useWeapon(int damage) {
         if (damage <= 2) {
-            Utils.colorPrint(ColorType.RED, "Your weapon broke...");
+            Utils.colorPrintln(ColorType.RED, "Your weapon broke...");
             value = -1;
             return;
         }
 
-        Utils.colorPrint(ColorType.YELLOW, "Your weapon took some damage...\n");
+        Utils.colorPrintln(ColorType.YELLOW, "Your weapon took some damage...");
         strength = damage;
     }
 
     public void showWeapon() {
+        Utils.colorPrint(ColorType.WHITE, " | ");
         if (strength != NEW_WEAPON) {
             String v;
             switch (strength) {
@@ -40,9 +41,9 @@ public class Weapon {
             }
 
             Utils.colorPrint(ColorType.YELLOW, "WEAPON: "+ value + suit);
-            Utils.colorPrint(ColorType.YELLOW, " -> "+ v +"\r\n\n");
+            Utils.colorPrint(ColorType.YELLOW, " -> "+ v);
         } else {
-            Utils.colorPrint(ColorType.YELLOW, "WEAPON: "+ value + suit +"\r\n\n");
+            Utils.colorPrint(ColorType.YELLOW, "WEAPON: "+ value + suit);
         }
     }
 

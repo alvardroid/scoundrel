@@ -60,7 +60,7 @@ public class GameManager {
                 return;
 
             } else if (userInput == 0 && dungeon.roomSize() <= 1) {
-                Utils.colorPrint(ColorType.YELLOW, "You step into the next room...");
+                Utils.colorPrintln(ColorType.YELLOW, "You step into the next room...");
                 Utils.waitEnter();
                 return;
             }
@@ -68,7 +68,7 @@ public class GameManager {
             challengeCard(userInput);
 
             if (player.isAlive() && dungeon.roomSize() <= 0) {
-                Utils.colorPrint(ColorType.YELLOW, "\nThe room is cleared. You move forward");
+                Utils.colorPrintln(ColorType.YELLOW, "The room is cleared. You move forward");
             }
 
             Utils.waitEnter();
@@ -84,7 +84,7 @@ public class GameManager {
                 fightEnemy(selectedCard);
                 break;
             case CardType.HEAL:
-                player.getHealth(selectedCard.getValue(), canHeal);
+                player.heal(selectedCard.getValue(), canHeal);
                 canHeal = false;
                 break;
             case CardType.WEAPON:
@@ -97,20 +97,26 @@ public class GameManager {
     }
 
     public int userSelect() {
-        showRoomInfo();
+        while (true) {
+            try {
+                showRoomInfo();
 
-        int number = Utils.userNumberInput();
-        if (number < 0 || number > dungeon.roomSize()) {
-            Utils.colorPrint(ColorType.RED, "Please enter a number in range [0-"+ dungeon.roomSize() +"]\n\n\r");
-            return userSelect();
+                int number = Utils.userNumberInput();
+                if (number < 0 || number > dungeon.roomSize()) {
+                    throw new Exception("Please enter a number in range [0-"+ dungeon.roomSize() +"]");
 
-        } else if (number == 0 && (!canEscape && dungeon.roomSize() > 1 && deck.getTotalCards() <= 0)) {
-            Utils.colorPrint(ColorType.RED, "Please enter a number in range [1-"+ dungeon.roomSize() +"]\n\n\r");
-            return userSelect();
+                } else if (number == 0 && (!canEscape && dungeon.roomSize() > 1 && deck.getTotalCards() <= 0)) {
+                    throw new Exception("Please enter a number in range [1-"+ dungeon.roomSize() +"]");
 
+                }
+                return number;
+
+            } catch (Exception e) {
+                Utils.colorPrintln(ColorType.RED, e.getMessage());
+                Utils.waitEnter();
+                Utils.clearScreen();
+            }
         }
-
-        return number;
     }
 
     public void showRoomInfo() {
@@ -118,6 +124,8 @@ public class GameManager {
             player.showAllStats();
         else
             player.showHealth();
+        
+        Utils.separator();
 
         if (deck.getTotalCards() > 1) {
             if (canEscape)
@@ -136,10 +144,10 @@ public class GameManager {
             return;
         }
 
-        Utils.colorPrint(ColorType.YELLOW, "\nHow you wanna fight the enemy?\r\n");
+        Utils.colorPrintln(ColorType.YELLOW, "How you wanna fight the enemy?");
         Utils.colorPrint(ColorType.LIME, "[1] Use Weapon");
         Utils.colorPrint(ColorType.YELLOW, " | ");
-        Utils.colorPrint(ColorType.RED, "[0] Barehanded\r\n");
+        Utils.colorPrintln(ColorType.RED, "[0] Barehanded");
 
         int userInput = Utils.userNumberInput();
         if (userInput > 1 || userInput < 0) {

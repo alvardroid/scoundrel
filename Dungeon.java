@@ -49,6 +49,5 @@ public class Dungeon {
             room.get(i).showCard(i + 1);
             System.out.print(" | ");
         }
-        System.out.println();
     }
 }

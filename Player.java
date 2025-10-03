@@ -10,72 +10,99 @@ public class Player {
     }
 
     public void showAllStats() {
-        Utils.colorPrint(ColorType.LIME, "PLAYER HEALTH: "+health);
-        Utils.colorPrint(ColorType.WHITE, " | ");
+        showHealth();
         weapon.showWeapon();
     }
 
     public void showHealth() {
-        Utils.colorPrint(ColorType.LIME, "PLAYER HEALTH: "+ health +"\n\n\r");
+        Utils.colorPrint(ColorType.LIME, "PLAYER HEALTH: "+ health);
     }
 
     public void attackWeapon(Card card) {
-        Utils.colorPrint(ColorType.YELLOW, "You draw your weapon to fight the enemy\n");
-        Utils.colorPrint(ColorType.LIME, "WEAPON STRENGTH: "+ weapon.getValue());
-        Utils.colorPrint(ColorType.YELLOW, " - ");
-        Utils.colorPrint(ColorType.RED, "ENEMY STRENGTH: "+ card.getValue());
+        showWeaponAttackDetails(card);
 
         int diff = weapon.getValue() - card.getValue();
         if (diff < 0) {
-            Utils.colorPrint(ColorType.PINK, "\nPLAYER HEALTH: "+ health +" -");
-            health = Math.max(health - Math.abs(diff), 0);
-            Utils.colorPrint(ColorType.PINK, "> "+ health +"\n");
-            playerState();
-
+            applyDamage(Math.abs(diff));
         } else {
-            Utils.colorPrint(ColorType.PINK, "\nYou took down the enemy flawlessly!\n");
+            Utils.separator();
+            Utils.colorPrintln(ColorType.PINK, "You took down the enemy flawlessly!");
         }
         
-        if (isAlive())
+        if (isAlive()) {
             weapon.useWeapon(card.getValue());
-        
+        }
     }
 
     public void attackBarehanded(Card card) {
-        Utils.colorPrint(ColorType.RED, "You tried to beat the enemy with your own hands...\n");
-        Utils.colorPrint(ColorType.PINK, "PLAYER HEALTH: "+ health +" -");
-        health = Math.max(health - card.getValue(), 0);
-        Utils.colorPrint(ColorType.PINK, "> "+ health);
+        Utils.colorPrintln(ColorType.RED, "You tried to beat the enemy with your own hands...");
 
-        playerState();
+        applyDamage(card.getValue());
     }
 
-    public void getHealth(int health, boolean canHeal) {
+
+    public void heal(int healAmount, boolean canHeal) {
         if (!canHeal) {
-            Utils.colorPrint(ColorType.RED, "You can only heal once per room...");
+            showHealError("You can only heal once per room...");
             return;
-        } else if (this.health >= baseHealth) {
-            Utils.colorPrint(ColorType.WHITE, "You tried to heal, but you're already at full health...");
+        }
+        if (isAtFullHealth()) {
+            showHealError("You tried to heal, but you're already at full health...");
             return;
         }
 
-        Utils.colorPrint(ColorType.LIME, "You healed some wounds!\n");
-        Utils.colorPrint(ColorType.PINK, this.health+" -");
-        this.health = Math.min(this.health + health, baseHealth);
-        Utils.colorPrint(ColorType.PINK, "> "+ this.health +" HP");
+        applyHealing(healAmount);
     }
 
     public void equipWeapon(Card card) {
         if (weapon.getValue() <= 0)
-            Utils.colorPrint(ColorType.LIME, "You equipped a new weapon!\n");
+            Utils.colorPrintln(ColorType.LIME, "You equipped a new weapon!");
         else 
-            Utils.colorPrint(ColorType.YELLOW, "You switched weapons!\n");
+            Utils.colorPrintln(ColorType.YELLOW, "You switched weapons!");
         
-        Utils.colorPrint(ColorType.YELLOW, "Now you're wielding a "+ card.getValue() + card.getSuit() +"\n");
+        Utils.colorPrintln(ColorType.YELLOW, "Now you're wielding a "+ card.getValue() + card.getSuit());
 
         weapon = new Weapon(card.getValue(), card.getSuit());
     }
 
+    private void applyHealing(int healAmount) {
+        Utils.colorPrintln(ColorType.LIME, "You healed some wounds!");
+
+        int newHealth = Math.min(this.health + healAmount, baseHealth);
+        healthChange(health, newHealth);
+    }
+
+    private void applyDamage(int damage) {
+        int newHealth = Math.max(health - damage, 0);
+        healthChange(health, newHealth);
+
+        showFightResult();
+    }
+
+    private void showWeaponAttackDetails(Card card) {
+        Utils.colorPrintln(ColorType.YELLOW, "You draw your weapon to fight the enemy");
+        Utils.colorPrint(ColorType.LIME, "WEAPON STRENGTH: " + weapon.getValue());
+        Utils.colorPrint(ColorType.YELLOW, " - ");
+        Utils.colorPrintln(ColorType.RED, "ENEMY STRENGTH: " + card.getValue());
+    }
+
+    public void healthChange(int oldHealth, int newHealth) {
+        Utils.colorPrintln(ColorType.PINK, "PLAYER HEALTH: " + oldHealth + " -> " + newHealth);
+        this.health = newHealth;
+    }
+
+    public void showFightResult() {
+        System.out.println();
+        if (health > 0)
+            Utils.colorPrintln(ColorType.LIME, "You took down the enemy!");
+        else
+            Utils.colorPrintln(ColorType.RED, "You have been defeated...");
+    }
+
+    private void showHealError(String message) {
+        Utils.colorPrintln(ColorType.RED, message);
+    }
+    
     public boolean isAlive() {
         return health > 0;
     }
@@ -88,11 +115,7 @@ public class Player {
         return weapon.getStrength();
     }
 
-    public void playerState() {
-        if (health > 0)
-            Utils.colorPrint(ColorType.LIME, "\nYou took down the enemy!\n");
-        else
-            Utils.colorPrint(ColorType.RED, "\nYou have been defeated...\n");
+    private boolean isAtFullHealth() {
+        return this.health >= baseHealth;
     }
-
 }
